@@ -1,0 +1,48 @@
+1)、线程和线程池问题
+2)、线程池在项目的什么地方用到  线程被频繁调用，创建线程比较消耗时间的时候，使用线程池，节省创建线程的时间消耗
+3)、手写单例模式或工厂模式 
+ 	public class Singleton{
+ 		private static Singleton singleton = null;
+ 		private Singleton(){}
+ 		public static synchronized Singleton getInstance(){
+ 			if(singleton == null){
+ 				singleton = new Singleton();
+ 			}
+ 			return singleton;
+ 		}
+ 	}
+4)、linux命令，主要自己使用了那些
+   cd ps -ef|grep sudo su - oracle date -s ll echo base64 vi crontab 
+5)、final的用法
+	修饰类，修饰方法，修饰字段，不可更改
+6)、字符拼接
+	StringBuffer sb = new StringBuffer();
+	sb.append("12");
+7)、rabbitmq如果消息未接收到，该如何处理
+8)、hashmap的底层原理
+	hashmap底层是数组加链表的形式，新建一个hashmap的时候就会生成一个数组，
+	数组包含map.entry键值对和指向下一个元素的引用，这样就构成了链表
+	数组中的储存位置根据hash算法来计算，根据equals方法确定该数组位置上的链表中的位置
+9)、json的操作工具
+	org.json是Java常用的Json解析工具，主要提供JSONObject和JSONArray类
+	net.sf.json
+	json.simple
+	gjson
+	jackson
+	fastjson
+10)、json相关，json是重点
+11)、数据库优化
+	建表时适当建立字段的长度，建立索引，调整sql语句，避免写过于复杂的sql语句，适当使用中间表，能用left join 
+	不用子查询，避免使用dblink访问数据库，使用dblink会产生网络交互，降低访问效率，避免在索引列上使用函数，计算，not条件
+	导致导引失效
+12)、底层数据结构（集合）arraylist，hashmap，这个也是重点
+13)、以前工作内容
+14)、遇到问题怎么解决的
+15)、索引
+16)、联合查询优化
+17)、数据库范式
+18)、用到了那些应用服务器
+19)、orm
+20)、HQL怎么写的
+21)、类加载过程
+22)、反射
