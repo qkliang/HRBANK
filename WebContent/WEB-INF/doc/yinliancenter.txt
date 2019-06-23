@@ -1,0 +1,120 @@
+1.String和StringBuffer的区别
+	String为字符串常量，而StringBuilder和StringBuffer均为字符串变量，即String对象一旦创建之后该对象是不可更改的，但后两者的对象是变量，是可以更改的
+2.==和eques的区别
+	对于==，比较的是值是否相等
+		如果作用于基本数据类型的变量，则直接比较其存储的 “值”是否相等；
+		如果作用于引用类型的变量，则比较的是所指向的对象的地址
+	对于equals方法，注意：equals方法不能作用于基本数据类型的变量，equals继承Object类，比较的是是否是同一个对象
+　　　　如果没有对equals方法进行重写，则比较的是引用类型的变量所指向的对象的地址；
+　　　　诸如String、Date等类对equals方法进行了重写的话，比较的是所指向的对象的内容。
+
+3.redis的数据类型有那些，redis是单线程还是多线程
+
+4.数据库里面的常用连接查询有哪些
+	内连接 左连接 右连接
+5.使用hibernate中如何实现连接查询
+	如果HQL使用了连接，但是没有使用fetch关键字，则生成的SQL语句虽然有连接，但是并没有取连接表的数据
+6.hibernate和mybatis如何防止sql注入
+	1.预编译sql 2.存储过程
+	在框架底层，是JDBC中的PreparedStatement类在起作用
+	
+	Mybatis防止SQL注入：结论：
+	#{}：相当于JDBC中的PreparedStatement
+	${}：是输出变量的值
+简单说，#{}是经过预编译的，是安全的；${}是未经过预编译的，仅仅是取变量的值，是非安全的，存在SQL注入。
+7.重载和重写的区别
+	方法重载是指同一个类中的多个方法具有相同的名字,但这些方法具有不同的参数列表,即参数的数量或参数类型不能完全相同
+
+	方法重写是存在子父类之间的,子类定义的方法与父类中的方法具有相同的方法名字,相同的参数表和相同的返回类型
+	
+8.shiro配置权限的方式有几种，分别解释一下
+
+9.shiro的实现原理
+
+10.ArrayList和linkeList的区别
+	1.ArrayList是实现了基于动态数组的数据结构，LinkedList基于链表的数据结构。 
+	2.对于随机访问get和set，ArrayList觉得优于LinkedList，因为LinkedList要移动指针。 
+	3.对于新增和删除操作add和remove，LinedList比较占优势，因为ArrayList要移动数据
+11.list集合和Map集合的区别
+	一个是存储单列数据的集合，另一个是存储键和值这样的双列数据的集合，List 中存储的数据是有顺序，并且允许重复；Map 中存储的数据是没有顺序的，其 key 是不能重复的，它的值是可以有重复的。
+12.缓存在什么情况下使用
+	1、经常变化的数据，但是不需要立刻进行持久化的。
+	2、经常被大量的读取，很少进行更新操作的。
+	3、大量的数据库IO操作。
+	4、一些通用的页面，例如JS、CSS、图片等。
+	5、统计和计算需要暂存的信息，需要加快计算的。
+13.你在项目里面做过哪些东西（做过系统哪些模块）
+
+14.mybaits使用resultMap如何实现一个查询
+
+15.mapper代理如何实现的
+
+16.ConcurrentHashMap缓存的实现原理
+ ConcurrentHashMap融合了Hashtable和HashMap二者的优势。
+ Hashtable是做了线程同步，HashMap未考虑同步。所以 HashMap在单线程下效率较高， Hashtable在多线程下同步操作能保证程序的正确性。
+ 但是 Hashtables每次执行同步操作都需要锁住整个结构。
+
+ ConcurrentHashMap的出现就是为了解决 Hashtable同步lock整个数据结构的问题。 ConcurrentHashMap锁的方式是细颗粒度。
+ ConcurrentHashMap将Hash表分为16个桶，诸如get/out/remove操作只需要锁着需要的单个桶即可
+ ConcurrentHashMap只有在size等操作的时候才会锁住整个Hash表。
+
+17.cookie和session的区别
+	Cookie是一种存储在远程客户端并以此来跟踪和识别用户的机制。
+	session是指终端用户与交互系统进行通信的时间间隔，通常是指从注册进入系统到注销退出系统之间所经过的时间
+18.线上出现问题你一般如何解决的
+
+19.svn如何合并版本
+	1、创建分支
+		在trunk（主干）上点击右键，在tortoiseSVN菜单中选择Branch/tag;
+	2、合并分支
+	假如我们是要将trunk合并到branch，那么我们就应该是在branch上操作（及在那个合并“到”的目录下操作）
+	在branch（分支）上点击右键，在tortoiseSVN菜单中选择merge;
+	弹出对话框中选择merge type
+	Merge a range of revisions(一般主要选择这个)
+	然后点击next按钮
+	
+	将分支合并到主干上，首先需要在主干的工作副本下进行，合并的范围是从主干的上次合并的版本开始到分支上最新的版本结束，如果是第一次合并，则从主干创建分支的版本开始，所以每次合并要做好说明，在日志中体现，不然忘记了下次再合并就有点麻烦。其实，应当尽量避免一个分支合并多次，分支的作用一般为了解决bug，一旦bug对应结束了，分支的使命就结束了，以后再出现其他的问题，应当重新建立分支，这样就不会出现多次合并的问题了
+20.描述一下用户登陆需要执行哪些操作
+	表单验证用户名是否合法，密码是否符合密码规则，点击登录按钮后，连接数据库验证密码的正确性
+21.设计一个简单权限需要几张表，分别解释一下
+	功能，用户组，用户三张表  将功能分配给用户组，将用户划入相应的组已取得相应的权限
+	
+	角色，用户，功能（拥有对应的菜单，根据不同的菜单实现具体的功能）
+	拥有480客户经理角色，银行客户经理，执行相应的功能
+	拥有15审查审批岗角色，贷款专职审批人，执行放贷审批
+	
+22.controller中常用的注解有哪些
+	@Controller
+	@ResquestMapping 用来定义访问URL，可以为整个类定义，也可以单个的为每个方法定义一个
+	@PathVariable
+	@ModelAttribute 获取页面参数
+	@ResquestParam
+	@ModelAttribute
+	
+23.ArrayList如何扩容
+	ArrayList扩容的方式，1.5倍扩容。
+	初始大小是10。
+24.AOP的实现原理，业务层事物如何实现
+	AOP能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可拓展性和可维护性。
+AOP 当中的概念：
+
+    切入点（Pointcut）
+    在哪些类，哪些方法上切入（where）
+    通知（Advice）
+    在方法执行的什么实际（when:方法前/方法后/方法前后）做什么（what:增强的功能）
+    切面（Aspect）
+    切面 = 切入点 + 通知，通俗点就是：在什么时机，什么地方，做什么增强！
+    织入（Weaving）
+    把切面加入到对象，并创建出代理对象的过程。（由 Spring 来完成）
+
+25.如何处理异常
+	try、catch、throw、throws和finally  try、catch捕获异常
+26.springMVC原理
+	客户端发送请求，被springDispatcherServlet拦截，通过requestMapping 进行HandlerAdapter处理，返回modelandview，DispatcherServlet根据View进行渲染视图，DispatcherServlet返回响应给用户
+27.什么是多线程
+	多个线程同步执行，异步执行方式，能够最大限度发挥多核计算机的计算能力，
+28.linux常用命令
+	cd ps -ef|grep sudo su - oracle date -s ll echo base64 vi crontab cat pwd rm mv cp chmod tar zip unzip tail -f  ifconfig
+ 
+
+3,6,8,9,22,24

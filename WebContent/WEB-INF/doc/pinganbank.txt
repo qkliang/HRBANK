@@ -1,5 +1,30 @@
 1)、线程和线程池问题
-2)、线程池在项目的什么地方用到  线程被频繁调用，创建线程比较消耗时间的时候，使用线程池，节省创建线程的时间消耗
+	多线程，继承 Thread 类，实现 Runnable 接口，实现 Callable 接口,返回值类型FutureTask<Object>
+	newFixedThreadPool固定大小的线程池，可以指定线程池的大小，该线程池corePoolSize和maximumPoolSize相等，阻塞队列使用的是LinkedBlockingQueue，大小为整数最大值。
+	newSingleThreadExecutor单个线程线程池，只有一个线程的线程池，阻塞队列使用的是LinkedBlockingQueue,若有多余的任务提交到线程池中，则会被暂存到阻塞队列，待空闲时再去执行。按照先入先出的顺序执行任务。
+	newCachedThreadPool缓存线程池，缓存的线程默认存活60秒。线程的核心池corePoolSize大小为0，核心池最大为Integer.MAX_VALUE,阻塞队列使用的是SynchronousQueue。是一个直接提交的阻塞队列，    他总会迫使线程池增加新的线程去执行新的任务。在没有任务执行时，当线程的空闲时间超过keepAliveTime（60秒），则工作线程将会终止被回收，当提交新任务时，如果没有空闲线程，则创建新线程执行任务，会导致一定的系统开销。如果同时又大量任务被提交，而且任务执行的时间不是特别快，那么线程池便会新增出等量的线程池处理任务，这很可能会很快耗尽系统的资源。
+	newScheduledThreadPool定时线程池，该线程池可用于周期性地去执行任务，通常用于周期性的同步数据。
+	
+	线程是否达到 核心线程数，未达到，创建新线程，达到了，进入队列，队列是否满，满了，是否达到了最大线程数，未达到，创建线程，达到了，执行拒绝策略
+	
+	任务缓存队列 即workQueue，它用来存放等待执行的任务。
+
+	workQueue的类型为BlockingQueue<Runnable>，通常可以取下面三种类型：
+		1）有界任务队列ArrayBlockingQueue：基于数组的先进先出队列，此队列创建时必须指定大小；
+		2）无界任务队列LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定此队列大小，则默认为Integer.MAX_VALUE；
+		3）直接提交队列synchronousQueue：这个队列比较特殊，它不会保存提交的任务，而是将直接新建一个线程来执行新来的任务。
+	拒绝策略
+		AbortPolicy:丢弃任务并抛出RejectedExecutionException
+		CallerRunsPolicy：只要线程池未关闭，该策略直接在调用者线程中，运行当前被丢弃的任务。显然这样做不会真的丢弃任务，但是，任务提交线程的性能极有可能会急剧下降。
+		DiscardOldestPolicy：丢弃队列中最老的一个请求，也就是即将被执行的一个任务，并尝试再次提交当前任务。
+		DiscardPolicy：丢弃任务，不做任何处理。
+
+2)、线程池在项目的什么地方用到
+	多线程的异步执行方式，虽然能够最大限度发挥多核计算机的计算能力，但是如果不加控制，反而会对系统造成负担。线程本身也要占用内存空间，大量的线程会占用内存资源并且可能会导致Out of Memory。即便没有这样的情况，大量的线程回收也会给GC带来很大的压力。
+	为了避免重复的创建线程，线程池的出现可以让线程进行复用。通俗点讲，当有工作来，就会向线程池拿一个线程，当工作完成后，并不是直接关闭线程，而是将这个线程归还给线程池供其他任务使用。
+	
+	在java中，如果每个请求到达就创建一个新线程，开销是相当大的。在实际使用中，创建和销毁线程花费的时间和消耗的系统资源都相当大，甚至可能要比在处理实际的用户请求的时间和资源要多的多。除了创建和销毁线程的开销之外，活动的线程也需要消耗系统资源。如果在一个jvm里创建太多的线程，可能会使系统由于过度消耗内存或“切换过度”而导致系统资源不足。为了防止资源不足，需要采取一些办法来限制任何给定时刻处理的请求数目，尽可能减少创建和销毁线程的次数，特别是一些资源耗费比较大的线程的创建和销毁，尽量利用已有对象来进行服务。
+
 3)、手写单例模式或工厂模式 
  	public class Singleton{
  		private static Singleton singleton = null;
@@ -12,13 +37,20 @@
  		}
  	}
 4)、linux命令，主要自己使用了那些
-   cd ps -ef|grep sudo su - oracle date -s ll echo base64 vi crontab 
+   cd ps -ef|grep sudo su - oracle date -s ll echo base64 vi crontab cat pwd rm mv cp chmod tar zip unzip tail -f  ifconfig
 5)、final的用法
 	修饰类，修饰方法，修饰字段，不可更改
 6)、字符拼接
+	1.直接用“+”号
+	2.使用String的方法concat
+	3.使用StringBuilder的append
+	4.使用StringBuffer的append
+	
 	StringBuffer sb = new StringBuffer();
 	sb.append("12");
+	
 7)、rabbitmq如果消息未接收到，该如何处理
+
 8)、hashmap的底层原理
 	hashmap底层是数组加链表的形式，新建一个hashmap的时候就会生成一个数组，
 	数组包含map.entry键值对和指向下一个元素的引用，这样就构成了链表
@@ -31,6 +63,27 @@
 	jackson
 	fastjson
 10)、json相关，json是重点
+
+SON的优点
+
+    A.数据格式比较简单，易于读写，格式都是压缩的，占用带宽小；
+    B.易于解析，客户端JavaScript可以简单的通过eval_r()进行JSON数据的读取；
+    C.支持多种语言，包括ActionScript, C, C#, ColdFusion, Java, JavaScript, Perl, PHP, Python, Ruby等服务器端语言，便于服务器端的解析；
+    D.因为JSON格式能直接为服务器端代码使用，大大简化了服务器端和客户端的代码开发量，且完成任务不变，并且易于维护
+
+JSON的缺点
+
+    A.没有XML格式这么推广的深入人心和喜用广泛，没有XML那么通用性；
+    B.JSON片段的创建和验证过程比一般的XML稍显复杂。
+
+	JSON的数据结构
+	数据结构：Object、Array
+	基本类型：string、number、true、false、null
+	
+	fastjson
+	JSONObject object = JSON.parseObject(str);
+	String result = JSON.toJSONString(list)
+	
 11)、数据库优化
 	建表时适当建立字段的长度，建立索引，调整sql语句，避免写过于复杂的sql语句，适当使用中间表，能用left join 
 	不用子查询，避免使用dblink访问数据库，使用dblink会产生网络交互，降低访问效率，避免在索引列上使用函数，计算，not条件
@@ -39,10 +92,173 @@
 13)、以前工作内容
 14)、遇到问题怎么解决的
 15)、索引
+	索引分类：
+	1. B树索引  2. 位图索引 3.单列索引和复合索引（如果索引建立在多个列上，只有它的第一个列被where子句引用时，优化器才会使用该索引，即至少要包含组合索引的第一列）
+	4. 函数索引
+　　		①. 当经常要访问一些函数或者表达式时，可以将其存储在索引中，这样下次访问时，该值已经计算出来了，可以加快查询速度
+　　		②. 函数索引既可以使用B数索引，也可以使用位图索引；当函数结果不确定时采用B树索引，结果是固定的某几个值时使用位图索引
+			③. 函数索引中可以水泥用len、trim、substr、upper（每行返回独立结果），不能使用如sum、max、min、avg等
+	
 16)、联合查询优化
+		①、FROM子句后面的表顺序有讲究
+			先说为啥，ORACLE在解析sql语句的时候对FROM子句后面的表名是从右往左解析的，是先扫描最右边的表，然后在扫描左边的表，然后用左边的表匹配数据，匹配成功后就合并。 所以，在对多表查询中，一定要把小表写在最右边
+		②、Where子句后面的条件过滤有讲究，ORACLE对where子句后面的条件过滤是自下向上，从右向左扫描的，所以和From子句一样一样的，把过滤条件排个序，按过滤数据的大小，自然就是最少数据的那个条件写在最下面，最右边，依次类推
+		③、使用select的时候少用*，多敲敲键盘，写上字段名吧，因为ORACLE的查询器会把*转换为表的全部列名，这个会浪费时间的，所以在大表中少用
+		④、存储过程中需要注意的，多用commit了，既可以释放资源，但是要谨慎
+		⑤、存储过程中需要注意的，多用commit了，既可以释放资源，但是要谨慎
+		⑥、少用in，多用exists来代替
+
 17)、数据库范式
+		第一范式：1NF的定义为：符合1NF的关系中的每个属性都不可再分。范式一强调数据表的原子性。
+		第二范式：2NF是对记录的惟一性，要求记录有惟一标识，即实体的惟一性，即不存在部分依赖；
+		第三范式：数据不能存在传递关系，即每个属性都跟主键有直接关系而不是间接关系。
 18)、用到了那些应用服务器
+		Tomcat WebSphere
 19)、orm
+		对象关系映射，是一种程序技术，用于实现面向对象编程语言里不同类型系统的数据之间的转换。从效果上说，它其实是创建了一个可在编程语言里使用的--“虚拟对象数据库”。
+		HIBERNATE JPA
 20)、HQL怎么写的
+		1，与SQL相似，SQL中的语法基本上都可以直接使用。
+		2，SQL查询的是表和表中的列；HQL查询的是对象与对象中的属性。
+		3，HQL的关键字不区分大小写，类名与属性名是区分大小写的。
+		4，SELECT可以省略
+		
+		// 1，简单的查询，Employee为实体名而不是数据库中的表名(面向对象特性)
+		hql = "FROM Employee";
+		hql = "FROM Employee AS e"; // 使用别名
+		hql = "FROM Employee e"; // 使用别名，as关键字可省略
+ 
+		// 2，带上过滤条件的（可以使用别名）：Where
+		hql = "FROM Employee WHERE id<10";
+		hql = "FROM Employee e WHERE e.id<10";
+		hql = "FROM Employee e WHERE e.id<10 AND e.id>5";
+ 
+		// 3，带上排序条件的：Order By
+		hql = "FROM Employee e WHERE e.id<10 ORDER BY e.name";
+		hql = "FROM Employee e WHERE e.id<10 ORDER BY e.name DESC";
+		hql = "FROM Employee e WHERE e.id<10 ORDER BY e.name DESC, id ASC";
+ 
+		// 4，指定select子句（不可以使用select *）
+		hql = "SELECT e FROM Employee e"; // 相当于"FROM Employee e"
+		hql = "SELECT e.name FROM Employee e"; // 只查询一个列，返回的集合的元素类型就是这个属性的类型
+		hql = "SELECT e.id,e.name FROM Employee e"; // 查询多个列，返回的集合的元素类型是Object数组
+		hql = "SELECT new Employee(e.id,e.name) FROM Employee e"; // 可以使用new语法，指定把查询出的部分属性封装到对象中
+ 
+		// 5，执行查询，获得结果（list、uniqueResult、分页 ）
+		Query query = session.createQuery("FROM Employee e WHERE id<3");
+		query.setFirstResult(0);
+		query.setMaxResults(10); // 等同于 limit 0,10
+		//两种查询结果list、uniqueResult
+		// List list = query.list(); // 查询的结果是一个List集合
+		// Employee employee = (Employee) query.uniqueResult();// 查询的结果是唯一的一个结果，当结果有多个，就会抛异常
+ 
+		// 6，方法链
+		List list = session.createQuery(//
+				"FROM Employee e")//
+				.setFirstResult(0)//
+				.setMaxResults(10)//
+				.list();
+ 
+		// 7，聚集函数：count(), max(), min(), avg(), sum()
+		hql = "SELECT COUNT(*) FROM Employee"; // 返回的结果是Long型的
+		hql = "SELECT min(id) FROM Employee"; // 返回的结果是id属性的类型
+ 
+		//8，分组: Group By ... Having
+		hql = "SELECT e.name,COUNT(e.id) FROM Employee e GROUP BY e.name";
+		hql = "SELECT e.name,COUNT(e.id) FROM Employee e GROUP BY e.name HAVING count(e.id)>1";
+		hql = "SELECT e.name,COUNT(e.id) FROM Employee e WHERE id<9 GROUP BY e.name HAVING count(e.id)>1";
+		hql = "SELECT e.name,COUNT(e.id) " + //
+			"FROM Employee e " + //
+			"WHERE id<9 " + //
+			"GROUP BY e.name " + //
+			"HAVING count(e.id)>1 " + //
+			"ORDER BY count(e.id) ASC";
+		hql = "SELECT e.name,COUNT(e.id) AS c " + //
+			"FROM Employee e " + //
+			"WHERE id<9 " + //
+			"GROUP BY e.name " + //
+			"HAVING count(e.id)>1 " + // 在having子句中不能使用列别名
+			"ORDER BY c ASC"; // 在orderby子句中可以使用列别名
+ 
+		// 9，连接查询 / HQL是面向对象的查询
+		//>> 内连接（inner关键字可以省略）
+		hql = "SELECT e.id,e.name,d.name FROM Employee e JOIN e.department d";
+		hql = "SELECT e.id,e.name,d.name FROM Employee e INNER JOIN e.department d";
+		//>> 左外连接（outer关键字可以省略）
+		hql = "SELECT e.id,e.name,d.name FROM Employee e LEFT OUTER JOIN e.department d";
+		//>> 右外连接（outer关键字可以省略）
+		hql = "SELECT e.id,e.name,d.name FROM Employee e RIGHT JOIN e.department d";
+		//可以使用更方便的方法
+		hql = "SELECT e.id,e.name,e.department.name FROM Employee e";
+ 
+		// 10，查询时使用参数
+		// >> 方式一：使用'?'占位
+		hql = "FROM Employee e WHERE id BETWEEN ? AND ?";
+		List list2 = session.createQuery(hql)//
+			.setParameter(0, 5)// 设置参数，第1个参数的索引为0。
+			.setParameter(1, 15)//
+			.list();
+ 
+		// >> 方式二：使用变量名
+		hql = "FROM Employee e WHERE id BETWEEN :idMin AND :idMax";
+		List list3 = session.createQuery(hql)//
+			.setParameter("idMax", 15)//
+			.setParameter("idMin", 5)//
+			.list();
+ 
+		// 当参数是集合时，一定要使用setParameterList()设置参数值
+		hql = "FROM Employee e WHERE id IN (:ids)";
+		List list4 = session.createQuery(hql)//
+			.setParameterList("ids", new Object[] { 1, 2, 3, 5, 8, 100 })//
+			.list();
+ 
+		// 11，update与delete，不会通知Session缓存
+		// >> Update
+		int result = session.createQuery(//
+				"UPDATE Employee e SET e.name=? WHERE id>15")//
+				.setParameter(0, "无名氏")//
+				.executeUpdate(); // 返回int型的结果，表示影响了多少行。
+		// >> Delete
+		int result1 = session.createQuery(//
+				"DELETE FROM Employee e WHERE id>15")//
+				.executeUpdate(); // 返回int型的结果，表示影响了多少行。
+
+
 21)、类加载过程
+	类加载的过程主要分为三个部分：
+		1.加载：程序运行之前jvm会把编译完成的.class二进制文件加载到内存，供程序使用，用到的就是类加载器classLoader ，这里也可以看出java程序的运行并不是直接依   靠底层的操作系统，而是基于jvm虚拟机。如果没有类加载器，java文件就只是磁盘中的一个普通文件。
+		2.连接
+			①验证：确保类加载的正确性。一般情况由javac编译的class文件是不会有问题的，但是可能有人的class文件是自己通过其他方式编译出来的，这就很有可能不符合jvm的编 译规则，这一步就是要过滤掉这部分不合法文件
+			②准备：为类的静态变量分配内存，将其初始化为默认值 。我们都知道静态变量是可以不用我们手动赋值的，它自然会有一个初始值 比如int 类型的初始值就是0 ；boolean类型初始值为false，引用类型的初始值为null 。 这里注意，只是为静态变量分配内存，此时是没有对象实例的
+			③解析：把类中的符号引用转化为直接引用。解释一下符号引用和直接引用。比如在方法A中使用方法B，A（）{B（）；}，这里的B（）就是符号引用，初学java时我们都是知道这是java的引用，以为B指向B方法的内存地址，但是这是不完整的，这里的B只是一个符号引用，它对于方法的调用没有太多的实际意义，可以这么认为，他就是给程序员看的一个标志，让程序员知道，这个方法可以这么调用，但是B方法实际调用时是通过一个指针指向B方法的内存地址，这个指针才是真正负责方法调用，他就是直接引用。
+		3.初始化：为类的静态变量赋予正确的初始值，上述的准备阶段为静态变量赋予的是虚拟机默认的初始值，此处赋予的才是程序编写者为变量分配的真正的初始值
+		
+	类加载到底是什么呢？其实类加载不过就是java虚拟机为类分配了几块内存空间，说的具体一点，就是jvm虚拟机将类的.class文件加载到内存，并将它放到运行时数据区的方法区内，然后在堆区创建一个java.lang.Class对象，用来封装类在方法区内的数据结构
+
 22)、反射
+	1、java反射机制的作用
+		1)在运行时判断任意一个对象所属的类
+		2)在运行时构造任意一个类的对象
+		3)在运行时判断任意一个类所具有的成员变量和方法
+		4)在运行时调用任意一个对象的方法
+		
+	2. 如何使用java的反射?
+		a. 通过一个全限类名创建一个对象
+		1)、Class.forName("全限类名"); 例如：com.mysql.jdbc.Driver Driver类已经被加载到 jvm中，并且完成了类的初始化工作就行了
+		2）、类名.class; 获取Class<？> clz 对象  
+		3）、对象.getClass();   
+		b. 获取构造器对象，通过构造器new出一个对象
+			1）. Clazz.getConstructor([String.class]);
+			2）. Con.newInstance([参数]);
+		c. 通过class对象创建一个实例对象（就相当与new类名（）无参构造器)
+			1）. Clazz.newInstance();
+
+		d. 通过class对象获得一个属性对象
+			1）、Field c=clz.getFields()：获得某个类的所有的公共（public）的字段，包括父类中的字段。 
+			2)、Field c=clz.getDeclaredFields()：获得某个类的所有声明的字段，即包括public、private和proteced，但是不包括父类的申明字段 
+		e. 通过class对象获得一个方法对象
+			1）. Clazz.getMethod("方法名",class…..parameaType);（只能获取公共的）
+			2）. Clazz.getDeclareMethod("方法名");（获取任意修饰的方法，不能执行私有）
+			3) M.setAccessible(true);（让私有的方法可以执行）
+		f. 让方法执行
+			1）. Method.invoke(obj实例对象,obj可变参数);-----（是有返回值的）
