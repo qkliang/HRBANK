@@ -39,5 +39,7 @@
 	</c:if>
 	
 	<br><br>
+	
+	<a href="inputEmployee">new Employee</a>
 </body>
 </html>
