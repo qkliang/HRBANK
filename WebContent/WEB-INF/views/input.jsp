@@ -3,6 +3,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="form"  uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,8 +12,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form:form action="emp" method="POST" modelAttribute="employee">
-		LastName:<form:input path="lastName"/>
+	<form:form action="${pageContext.request.contextPath}/emp" method="POST" modelAttribute="employee">
+		<c:if test="${employee.id == null}">
+			LastName:<form:input path="lastName"/>
+		</c:if>
+		<c:if test="${employee.id !=null }">
+			<form:hidden path="id"/>
+			<input type="hidden" name="_method" value="PUT">
+		</c:if>
 		<br>
 		email:<form:input path="email"/>
 		<br>
