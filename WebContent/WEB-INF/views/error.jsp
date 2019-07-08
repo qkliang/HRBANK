@@ -7,13 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<a href="emps">list all employees</a>
-	<br><br>
-	<form action="testFileUpload" method="post" enctype="multipart/form-data">
-		File:<input type="file" name="file"/>
-		Desc:<input type="text" name="desc" />
-		<input type="submit" value="submit" />
-	</form>
-	<a href="testException?i=10">test Exception</a>
+	
+	<h4>Error Page</h4>
+	
+	${exception }
+	
 </body>
 </html>
