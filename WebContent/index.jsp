@@ -15,5 +15,7 @@
 		<input type="submit" value="submit" />
 	</form>
 	<a href="testException?i=10">test Exception</a>
+	<br><br>
+	<a href="testResponseException?i=13">test ResponseException</a>
 </body>
 </html>
