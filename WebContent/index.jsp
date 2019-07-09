@@ -17,5 +17,8 @@
 	<a href="testException?i=10">test Exception</a>
 	<br><br>
 	<a href="testResponseException?i=13">test ResponseException</a>
+	
+	<br><br>
+	<a href="testSimpleMappingException?i=12">test SimpleMappingException</a>
 </body>
 </html>

@@ -14,7 +14,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class SpringMVCTest {
 	
-	@ResponseStatus(value=HttpStatus.NOT_FOUND,reason="erersd")
+	@RequestMapping(value="/testSimpleMappingException")
+	public String testSimpleMappingException(@RequestParam("i") int i){
+		String [] vals = new String[10];
+		System.out.println(vals[i]);
+		return "success";
+	}
+//	@ResponseStatus(value=HttpStatus.NOT_FOUND,reason="erersd")
 	@RequestMapping("/testResponseException")
 	public String testResponseStatusExceptionResolver(@RequestParam("i") int i){
 		if(i == 13){
